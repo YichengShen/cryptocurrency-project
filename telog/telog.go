@@ -29,12 +29,9 @@ func CreateEmptyHashPointer() hashPointer {
 	return hashPointer{}
 }
 
-// Returns the hash digest
-func hashSha256(o interface{}) string {
-	h := sha256.New()
-	h.Write([]byte(fmt.Sprintf("%v", o)))
-
-	return fmt.Sprintf("%x", h.Sum(nil))
+// Returns the hash digest of a block
+func hashSha256(b block) string {
+	return fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%v", b))))
 }
 
 // Adds a new block into the log
