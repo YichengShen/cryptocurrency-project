@@ -2,8 +2,8 @@
 
 	The telog package is an implementation of the Tamper-evident log.
 	It supports two APIs:
-		1. addBlock: adds block to the end of the chain
-		2. check: takes the head and check whether there is some block that has been tampered
+		1. AddBlock: adds block to the end of the chain
+		2. Check: takes the head and check whether there is some block that has been tampered
 
 */
 package telog
@@ -11,6 +11,7 @@ package telog
 import (
 	"crypto/sha256"
 	"fmt"
+	"hash"
 )
 
 type hashPointer struct {
@@ -23,59 +24,64 @@ type block struct {
 	data string
 }
 
-// Returns a empty hash pointer
-// Used when creating the genesis block
-func CreateEmptyHashPointer() hashPointer {
-	return hashPointer{}
+type Telog struct {
+	head hashPointer
+	hashObject hash.Hash
 }
 
-// Returns the hash digest
-func hashSha256(o interface{}) string {
-	h := sha256.New()
-	h.Write([]byte(fmt.Sprintf("%v", o)))
-
-	return fmt.Sprintf("%x", h.Sum(nil))
+// Init initializes an empty head and a hash function used for telog with SHA-256.
+func (t *Telog) Init() {
+	t.head = hashPointer{}
+	t.hashObject = sha256.New()
 }
 
-// Adds a new block into the log
-// Returns the head hash pointer
-// Leave the hashPointer empty if the block is a genesis block
-func AddBlock(data string, head hashPointer) hashPointer {
+// hashSha256 returns the hash digest of a block.
+func (t *Telog) hashSha256(block block) string {
+	t.hashObject.Write([]byte(fmt.Sprintf("%v", block)))
+	return fmt.Sprintf("%x", t.hashObject.Sum(nil))
+}
+
+// AddBlock adds a block with data to the end of a tamper evident log.
+func (t *Telog) AddBlock(data string) {
+	// Create a new block.
 	newBlock := block{
-		hashPointer: head,
+		// Use the old hash pointer of the head to connect the new block to the next latest block
+		hashPointer: t.head,
 		data: data,
 	}
+	
+	// Hash the new block.
+	newBlockHash := t.hashSha256(newBlock)
 
-	hashDigest := hashSha256(newBlock)
-
-	newHead := hashPointer{
+	// Connect the head to the new block with a hash pointer.
+	t.head = hashPointer{
 		pointer: &newBlock,
-		hash: hashDigest,
+		hash: newBlockHash,
 	}
-
-	return newHead
 }
 
-// Recursively check if the log is tampered
-func Check(head hashPointer) bool {
-	// Base Case: Reached genesis block
-	if head == (hashPointer{}) {
-		fmt.Println("reached genesis")
-		return true
-	}
+// Check determines if the log has been tampered with,
+// returning true if the log is valid and false if the log was tampered.
+// TODO Check is returning false instead of true for an untampered log.
+func (t *Telog) Check() bool {
+	currentHashPointer := t.head
+	emptyHashPointer := hashPointer{}
 
-	prevHashPointer := (*head.pointer).hashPointer
-	// Recursive Case
-	if Check(prevHashPointer) {
-		fmt.Println("Previous block", *head.pointer)
-		fmt.Println("-----")
-		prevBlockHash := hashSha256(*head.pointer)
-		if head.hash == prevBlockHash {
-			return true
+	// Execute as long as there is a non-empty hash pointer.
+	for currentHashPointer != emptyHashPointer {
+		// Access the block pointed to by the hash pointer
+		currentBlock := *currentHashPointer.pointer
+		// Hash the block.
+		currentBlockHash := t.hashSha256(currentBlock)
+
+		if currentBlockHash	!= currentHashPointer.hash {
+			return false
 		}
-	}
 
-	return false
+		// Iterate to next pointer
+		currentHashPointer = t.head.pointer.hashPointer
+	}
+	return true
 }
 
 // TODO: add attack to test check
