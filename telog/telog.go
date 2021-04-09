@@ -11,7 +11,6 @@ package telog
 import (
 	"crypto/sha256"
 	"fmt"
-	"hash"
 )
 
 type hashPointer struct {
@@ -26,19 +25,16 @@ type block struct {
 
 type Telog struct {
 	head hashPointer
-	hashObject hash.Hash
 }
 
 // Init initializes an empty head and a hash function used for telog with SHA-256.
 func (t *Telog) Init() {
 	t.head = hashPointer{}
-	t.hashObject = sha256.New()
 }
 
 // hashSha256 returns the hash digest of a block.
 func (t *Telog) hashSha256(block block) string {
-	t.hashObject.Write([]byte(fmt.Sprintf("%v", block)))
-	return fmt.Sprintf("%x", t.hashObject.Sum(nil))
+	return fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%v", block))))
 }
 
 // AddBlock adds a block with data to the end of a tamper evident log.
@@ -71,7 +67,8 @@ func (t *Telog) Check() bool {
 	for currentHashPointer != emptyHashPointer {
 		// Access the block pointed to by the hash pointer
 		currentBlock := *currentHashPointer.pointer
-		// Hash the block.
+
+		// Rehash the block to check if it was tampered with.
 		currentBlockHash := t.hashSha256(currentBlock)
 
 		if currentBlockHash	!= currentHashPointer.hash {
@@ -79,9 +76,7 @@ func (t *Telog) Check() bool {
 		}
 
 		// Iterate to next pointer
-		currentHashPointer = t.head.pointer.hashPointer
+		currentHashPointer = currentBlock.hashPointer
 	}
 	return true
 }
-
-// TODO: add attack to test check
