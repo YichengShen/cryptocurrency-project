@@ -1,6 +1,8 @@
 # Tamper-evident Log
 
 ## Design
+A tamper evident log consists of a head of type hash pointer.
+
 A block consists of a hash pointer field and a data field.
 
 A hash pointer consists of a pointer to the previous block and a hash digest of the previous block.
