@@ -1,4 +1,4 @@
-# Tamper-evident Log
+# Tamper Evident Log
 
 ## Design
 A tamper evident log consists of a head of type hash pointer.
