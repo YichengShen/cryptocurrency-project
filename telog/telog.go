@@ -35,6 +35,7 @@ func (t *Telog) Init() {
 // hashSha256 returns the hash digest of a block.
 func (t *Telog) hashSha256(block block) string {
 	return fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%v", block))))
+}
 
 // AddBlock adds a block with data to the end of a tamper evident log.
 func (t *Telog) AddBlock(data string) {
