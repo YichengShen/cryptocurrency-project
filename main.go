@@ -13,8 +13,13 @@ func main() {
 	log.AddBlock("Goofy paid Alice 5 dollars")
 	log.AddBlock("Alice paid Bob 5 dollars")
 
-	fmt.Print("Log is valid: ")
-	fmt.Println(log.Check())
+	fmt.Println("# Blocks in Log:", log.GetNumBlocks())
+
+	fmt.Println("Log is valid:", log.Check())
+
+	log.Attack(1)
+
+	fmt.Println("After attack, Log is valid:", log.Check())
 }
 
 

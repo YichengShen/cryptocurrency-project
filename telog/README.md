@@ -11,6 +11,9 @@ When an adversary attempts to change the data in a block, the hash pointer point
 
 <img src="/images/tamper-evident-log.png" alt="Tamper-evident Log Design">
 
+## Side Note
+We added an Attack function that modifies data at an arbitrary block. This helps us to make sure we have implemented Check correctly.
+
 ## References
 
 1. Hash: [sha256](https://golang.org/pkg/crypto/sha256/)
