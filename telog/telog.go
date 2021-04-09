@@ -59,7 +59,6 @@ func (t *Telog) AddBlock(data string) {
 
 // Check determines if the log has been tampered with, returning true if the log is valid and false if the log was
 // tampered with.
-// TODO Check is returning false instead of true for an untampered log.
 func (t *Telog) Check() bool {
 	currentHashPointer := t.head
 	emptyHashPointer := hashPointer{}
