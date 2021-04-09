@@ -5,7 +5,9 @@ A block consists of a hash pointer field and a data field.
 
 A hash pointer consists of a pointer to the previous block and a hash digest of the previous block.
 
-<img src="../images/tamper-evident-log.png" alt="Tamper-evident Log Design">
+When an adversary attempts to change the data in a block, the hash pointer pointing to the changed block will have a different hash than the new hash of the changed block. Editing the hash of the hash pointer will itself change the hash of the next block. The only way to tamper with the log undetected is to change every hash pointer, all the way to the head.
+
+<img src="/images/tamper-evident-log.png" alt="Tamper-evident Log Design">
 
 ## References
 

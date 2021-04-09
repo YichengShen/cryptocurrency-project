@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-	// Declare and initialize a tamper evident log with the SHA256 hash algorithm.
 	log := telog.Telog{}
 	log.Init()
 
