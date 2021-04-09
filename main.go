@@ -6,11 +6,16 @@ import (
 )
 
 func main() {
-	head := telog.AddBlock("0", telog.CreateEmptyHashPointer())
-	head1 := telog.AddBlock("1", head)
-	head2 := telog.AddBlock("2", head1)
-	head3 := telog.AddBlock("3", head2)
-	fmt.Println(telog.Check(head3))
+	// Declare and initialize a tamper evident log with the SHA256 hash algorithm.
+	log := telog.Telog{}
+	log.Init()
+
+	log.AddBlock("Goofy mints 5 dollars")
+	log.AddBlock("Goofy paid Alice 5 dollars")
+	log.AddBlock("Alice paid Bob 5 dollars")
+
+	fmt.Print("Log is valid: ")
+	fmt.Println(log.Check())
 }
 
 
