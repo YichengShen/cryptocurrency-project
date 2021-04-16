@@ -111,8 +111,6 @@ func (txa *TxArray) AppendNewTx(
 		signature: signature,
 	}
 
-	// check signature
-
 	txa.txs = append(txa.txs, newTx)
 }
 
