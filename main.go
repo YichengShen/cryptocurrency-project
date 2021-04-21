@@ -30,8 +30,10 @@ func main() {
 	transactions.AppendNewTx("CoinMaker", "Bob", &tx.CoinMakerPk, &bob.Pk, &tx.CoinMakerSk, 200)
 	transactions.AppendNewTx("CoinMaker", "Alice", &tx.CoinMakerPk, &alice.Pk, &tx.CoinMakerSk, 100)
 	transactions.AppendNewTx("CoinMaker", "Bob", &tx.CoinMakerPk, &bob.Pk, &tx.CoinMakerSk, 200)
-	transactions.AppendNewTx("Alice", "Bob", &alice.Pk, &bob.Pk, &alice.Sk, 50)
-	transactions.AppendNewTx("Bob", "Alice", &bob.Pk, &alice.Pk, &bob.Sk, 150)
+	transactions.AppendNewTx("Alice", "Bob", &alice.Pk, &bob.Pk, &alice.Sk, 25)
+	transactions.AppendNewTx("Alice", "Bob", &alice.Pk, &bob.Pk, &alice.Sk, 25)
+	transactions.AppendNewTx("Bob", "Alice", &bob.Pk, &alice.Pk, &bob.Sk, 200)
+	transactions.AppendNewTx("Alice", "Bob", &alice.Pk, &bob.Pk, &alice.Sk, 100)
 
 	transactions.PrintTxHistory()
 
